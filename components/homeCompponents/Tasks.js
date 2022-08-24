@@ -3,7 +3,7 @@ import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
 import {useState} from 'react';
 
-function Tasks({task, removeTaskhandler}) {
+function Tasks({task, removeTaskhandler, navigation}) {
   const [stared, setStared] = useState(task?.star);
   const [showDelete, setShowDelete] = useState(false);
   const starHandler = () => {
@@ -14,7 +14,7 @@ function Tasks({task, removeTaskhandler}) {
   return (
     <TouchableOpacity
       style={styles.taskContainer}
-      onPress={() => console.log('press in parent')}
+      onPress={() => navigation.navigate('Counts', {id: task?.title})}
       onLongPress={() => setShowDelete(true)}
       activeOpacity={0.4}>
       <View style={styles.taskTitles}>

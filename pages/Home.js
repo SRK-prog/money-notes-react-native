@@ -9,6 +9,7 @@ import {
 import Icon from 'react-native-vector-icons/dist/Ionicons';
 import AddTask from '../components/homeCompponents/AddTask';
 import Task from '../components/homeCompponents/Task';
+import { SQLiteDatabase } from 'react-native-sqlite-storage';
 
 const data = [
   {
@@ -37,7 +38,8 @@ const data = [
   },
 ];
 
-function Home() {
+
+function Home({navigation}) {
   const [newData, setNewData] = useState(data);
   const [stared, setStared] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
@@ -50,11 +52,7 @@ function Home() {
     const newItems = newData.filter(item => item.title != id);
     setNewData(newItems);
   };
-  // const staredTasksHandler = () => {
-  //   const newItems = newData.filter(item => item.star != true);
-  //   setNewData(newItems);
-  // };
-
+  console.log(SQLiteDatabase)
   const showStaredHandler = () => {
     if (staredFilter === false) {
       setStaredFilter(null);
@@ -107,6 +105,7 @@ function Home() {
           staredFilter={staredFilter}
           removeTaskhandler={removeTaskhandler}
           tasks={newData}
+          navigation={navigation}
         />
       </View>
     </ScrollView>

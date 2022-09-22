@@ -2,11 +2,12 @@ import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
 import {useState} from 'react';
+import moment from "moment"
 
 function Tasks({task, removeTaskhandler, navigation}) {
   const [stared, setStared] = useState(task?.star);
   const [showDelete, setShowDelete] = useState(false);
-  const starHandler = () => {
+  const starHandler = async () => {
     setStared(!stared);
     task['star'] = !task?.star;
   };
@@ -14,11 +15,11 @@ function Tasks({task, removeTaskhandler, navigation}) {
   return (
     <TouchableOpacity
       style={styles.taskContainer}
-      onPress={() => navigation.navigate('Counts', {id: task?.title})}
+      onPress={() => navigation.navigate('Counts', {id: task?._id, title: task?.Title})}
       onLongPress={() => setShowDelete(true)}
       activeOpacity={0.4}>
       <View style={styles.taskTitles}>
-        <Text style={styles.taskTitle}>{task?.title}</Text>
+        <Text style={styles.taskTitle}>{task?.Title}</Text>
         <Icon
           onPress={() => starHandler()}
           name={task?.star ? 'star' : 'star-o'}
@@ -27,8 +28,8 @@ function Tasks({task, removeTaskhandler, navigation}) {
         />
       </View>
       <View style={styles.taskDates}>
-        <Text style={styles.taskCreated}>{task?.createdAt}</Text>
-        <Text style={styles.taskUpdated}>{task?.updatedAt}</Text>
+        <Text style={styles.taskCreated}>{moment(task?.createdAt).format('l')}</Text>
+        <Text style={styles.taskUpdated}>{moment(task?.updateAt).format("l")}</Text>
       </View>
       {showDelete && (
         <View style={styles.taskDeleteBtns}>

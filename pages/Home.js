@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -11,36 +11,8 @@ import AddTask from '../components/homeCompponents/AddTask';
 import Task from '../components/homeCompponents/Task';
 import { SQLiteDatabase } from 'react-native-sqlite-storage';
 
-const data = [
-  {
-    title: 'Balance',
-    star: false,
-    createdAt: '12/34/2021',
-    updatedAt: '2 hour ago',
-  },
-  {
-    title: 'dummy-2',
-    star: false,
-    createdAt: '12/34/2021',
-    updatedAt: '2 hour ago',
-  },
-  {
-    title: 'dummy-3',
-    star: false,
-    createdAt: '12/34/2021',
-    updatedAt: '2 hour ago',
-  },
-  {
-    title: 'dummy-4',
-    star: false,
-    createdAt: '12/34/2021',
-    updatedAt: '2 hour ago',
-  },
-];
-
-
 function Home({navigation}) {
-  const [newData, setNewData] = useState(data);
+  const [newData, setNewData] = useState([]);
   const [stared, setStared] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [staredFilter, setStaredFilter] = useState(null);
@@ -48,11 +20,20 @@ function Home({navigation}) {
   const addTaskHandler = request => {
     setNewData([request, ...newData]);
   };
+
+  useEffect(() => {
+    (async () => {
+      const data = await fetch("https://my-notepad-backend.herokuapp.com/lists");
+      const response = await data.json();
+      setNewData(response);
+    })()
+  },[])
+
   const removeTaskhandler = id => {
     const newItems = newData.filter(item => item.title != id);
     setNewData(newItems);
   };
-  console.log(SQLiteDatabase)
+
   const showStaredHandler = () => {
     if (staredFilter === false) {
       setStaredFilter(null);

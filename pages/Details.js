@@ -1,47 +1,42 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, Text, StyleSheet, TextInput} from 'react-native';
 import Icon from 'react-native-vector-icons/dist/Ionicons';
 import ValuePair from '../components/homeCompponents/details/valuePairs';
 
-const data = [
-  {
-    amount: '12334',
-    label: 'testing',
-  },
-  {
-    amount: '445',
-    label: 'test',
-  },
-  {
-    amount: '12334',
-    label: 'sample',
-  },
-  {
-    amount: '9874',
-    label: 'boring',
-  },
-];
-
 function Details({route, navigation}) {
-  const [addData, setAddData] = useState(data);
+  const [addData, setAddData] = useState([]);
   const [input, setInputData] = useState('');
 
-  const addHandler = () => {
+  useEffect(() => {
+    (async () => {
+      const data = await fetch("https://my-notepad-backend.herokuapp.com/notes?listId=" + route?.params?.id);
+      const response = await data.json();
+      setAddData(response);
+    })()
+  },[])
+
+  const addHandler = async () => {
     const newData = input?.split(' ');
     if (newData[0] && newData[1]) {
       try {
         var calculate = eval(newData[0]);
-        setAddData([...addData, {amount: calculate, label: newData[1]}]);
+        const body = {amount: calculate, label: newData[1], listId: route?.params?.id}
+        setAddData([...addData, body]);
         setInputData('');
-      } catch {
-        console.log('err');
+        const res = await fetch("https://my-notepad-backend.herokuapp.com/notes", {
+            method: "POST",
+            header: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        })
+      } catch(err) {
+        console.log('err', err);
       }
     }
   };
 
   return (
     <View style={styles.Container}>
-      <Text style={styles.heading}>{route?.params?.id}</Text>
+      <Text style={styles.heading}>{route?.params?.title}</Text>
       <View style={styles.itemsContainer}>
         <View style={styles.titles}>
           <Text style={styles.titleAmount}>Amount</Text>
